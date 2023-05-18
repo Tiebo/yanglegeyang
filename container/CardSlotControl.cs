@@ -68,6 +68,11 @@ namespace yanglegeyang.container {
 			slots.Add(obj);
 			// 验卡区的卡片删除点击事件
 			obj.RemoveImageCantainer();
+			// 从层级中删除该卡片
+			Console.WriteLine(obj.Level);
+			MySpace.remove_level_fruit(obj);
+			// 重新绘制底层
+			MySpace.update_flag(obj);
 			// Retrieve the delegate list from the MouseClick event handler.
 			obj.RemoveClick();
 			// 排序验卡区中的图片

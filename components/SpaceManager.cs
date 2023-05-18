@@ -29,12 +29,12 @@ namespace yanglegeyang.components {
 		public static void Rectangle(FruitObject fruitObject) {
 			Rectangle bounds = fruitObject.Fruits.Bounds;
 			
-			int x1 = fruitObject.X;
-			int x2 = fruitObject.X + FruitObject.DefaultWidth / 2;
-			int x3 = fruitObject.X + FruitObject.DefaultHeight;
-			int y1 = fruitObject.Y;
-			int y2 = fruitObject.Y + FruitObject.DefaultHeight / 2;
-			int y3 = fruitObject.Y + FruitObject.DefaultHeight;
+			int x1 = bounds.X;
+			int x2 = bounds.X + FruitObject.DefaultWidth / 2;
+			int x3 = bounds.X + FruitObject.DefaultHeight;
+			int y1 = bounds.Y;
+			int y2 = bounds.Y + FruitObject.DefaultHeight / 2;
+			int y3 = bounds.Y + FruitObject.DefaultHeight;
 
 			PutToCache(x1, fruitObject, LeavlDataX1);
 			PutToCache(x2, fruitObject, LeavlDataX2);
@@ -72,12 +72,14 @@ namespace yanglegeyang.components {
          * @param fruitObject
          */
 		public static void RemoveCompontFlag(FruitObject fruitObject) {
-			int x1 = fruitObject.X;
-			int x2 = fruitObject.X + FruitObject.DefaultWidth / 2;
-			int x3 = fruitObject.X + FruitObject.DefaultHeight;
-			int y1 = fruitObject.Y;
-			int y2 = fruitObject.Y + FruitObject.DefaultHeight / 2;
-			int y3 = fruitObject.Y + FruitObject.DefaultHeight;
+			Rectangle bounds = fruitObject.Fruits.Bounds;
+
+			int x1 = bounds.X;
+			int x2 = bounds.X + FruitObject.DefaultWidth / 2;
+			int x3 = bounds.X + FruitObject.DefaultHeight;
+			int y1 = bounds.Y;
+			int y2 = bounds.Y + FruitObject.DefaultHeight / 2;
+			int y3 = bounds.Y + FruitObject.DefaultHeight;
 			DeleteLevelFlag(x1, fruitObject, LeavlDataX1);
 			DeleteLevelFlag(x2, fruitObject, LeavlDataX2);
 			DeleteLevelFlag(x3, fruitObject, LeavlDataX3);
@@ -85,7 +87,7 @@ namespace yanglegeyang.components {
 			DeleteLevelFlag(y2, fruitObject, LeavlDataY2);
 			DeleteLevelFlag(y3, fruitObject, LeavlDataY3);
 
-			UpdateCompontFlag(fruitObject, true, new Rectangle());
+			UpdateCompontFlag(fruitObject, true, bounds);
 		}
 
 		private static void DeleteLevelFlag(int point, FruitObject fruitObject,
@@ -120,12 +122,12 @@ namespace yanglegeyang.components {
          */
 		private static void UpdateCompontFlag(FruitObject fruitObject, bool flag, Rectangle bounds) {
 			int level = fruitObject.Level;
-			int x1 = fruitObject.X;
-			int x2 = fruitObject.X + FruitObject.DefaultWidth / 2;
-			int x3 = fruitObject.X + FruitObject.DefaultHeight;
-			int y1 = fruitObject.Y;
-			int y2 = fruitObject.Y + FruitObject.DefaultHeight / 2;
-			int y3 = fruitObject.Y + FruitObject.DefaultHeight;
+			int x1 = bounds.X;
+			int x2 = bounds.X + FruitObject.DefaultWidth / 2;
+			int x3 = bounds.X + FruitObject.DefaultHeight;
+			int y1 = bounds.Y;
+			int y2 = bounds.Y + FruitObject.DefaultHeight / 2;
+			int y3 = bounds.Y + FruitObject.DefaultHeight;
 			for (int i = 0; i < level; i++) {
 				UpdateLevelFlag(x1, x2, x3, y1, y2, y3, x1, i, LeavlDataX1, flag);
 				UpdateLevelFlag(x1, x2, x3, y1, y2, y3, x2, i, LeavlDataX2, flag);

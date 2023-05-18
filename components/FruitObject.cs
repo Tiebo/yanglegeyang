@@ -24,10 +24,6 @@ namespace yanglegeyang.components {
 		
 		private bool _flag = false; //是否可以点击
 
-		
-		public bool LeftFold = false;// 是否为遮挡元素
-		public bool RightFold = false;// 是否为遮挡元素
-		
 		ImageControl _imageControl;
 		
 		CardSlotControl _cardSlotControl;
