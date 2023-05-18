@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="components\FruitObject.cs" />
     <Compile Include="components\Fruits.cs" />
+    <Compile Include="components\MySpace.cs" />
     <Compile Include="components\SpaceManager.cs" />
     <Compile Include="container\CardSlotControl.cs">
       <SubType>UserControl</SubType>

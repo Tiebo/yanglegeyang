@@ -30,12 +30,12 @@ namespace yanglegeyang {
 		private const int MaxLevel = 10; //多少层
 		private const int MaxWidth = 6; // 跨度个数
 		private const int MaxHeight = 5; // 最大宽度
-		private int _maxFlop = 60; //翻牌数量;
+		private int _maxFlop = 40; //翻牌数量;
 
 		public void InitContent() {
 			Random random = new Random();
 			Console.WriteLine($@"{MaxLevel}层, {MaxWidth}跨, {MaxHeight}宽, {_maxFlop}翻牌");
-			List<string> list = ReadResourceUtil.ReadSkin(true);
+			List<string> list = ReadResourceUtil.ReadSkin(false);
 			int typeSize = list.Count;
 			Console.WriteLine($@"种类数量：{typeSize}");
 			// 求得每种种类的个数
@@ -55,18 +55,19 @@ namespace yanglegeyang {
 
 			// 随机生成卡片集合：打乱顺序
 			List<FruitObject> fruitObjects = new List<FruitObject>();
+			
 			foreach (string tmp in list) {
 				try {
 					Bitmap bufferedImage = new Bitmap(Image.FromFile(tmp));
 					int count = groupCount + (_maxFlop > 0 ? random.Next(_maxFlop) : 0);
 					for (int i = 0; i < count; i++) {
-						int size = fruitObjects.Count - 1;
-						Fruits fruits = new Fruits(_imageControl, bufferedImage, tmp);
-						int index = 0;
+						var size = fruitObjects.Count - 1;
+						var fruits = new Fruits(bufferedImage, tmp);
+						var index = 0;
 						if (size > 10) {
 							index = random.Next(size);
 						}
-
+						
 						fruitObjects.Insert(index, new FruitObject(cardSlotControl, fruits, 0, 0, 0));
 						_maxFlop--;
 					}
@@ -82,8 +83,7 @@ namespace yanglegeyang {
 			for (int i = 0; i < MaxLevel; i++) {
 				for (int x = 0; x < MaxWidth; x++) {
 					for (int y = 0; y < MaxHeight; y++) {
-						FruitObject fruitObject;
-						fruitObject = fruitObjects[idx++];
+						var fruitObject = fruitObjects[idx++];
 						fruitObject.X = x;
 						fruitObject.Y = y;
 						fruitObject.Level = i;
@@ -92,35 +92,22 @@ namespace yanglegeyang {
 					}
 				}
 			}
-
 			Console.WriteLine(@"重叠数量：" + idx);
 			// 绘制翻牌区
 			int fSize = fruitObjects.Count;
 			if (idx < fSize) {
 				int step = 5;
 				int lenght = fSize - idx;
-				for (int i = 0; i < lenght; i++) // 绘制右边
+				for (int i = 0; i < lenght; i++)
 				{
 					FruitObject fruitObject = fruitObjects[idx++];
 					fruitObject.X = MaxWidth - 1;
 					fruitObject.Y = MaxHeight + 1;
 					fruitObject.Level = i;
-					fruitObject.ShowFold(_imageControl, initX - (lenght * step), initY, i * step, false);
+					if (i == 0) fruitObject.SetFlag(true);
+					fruitObject.ShowFold(_imageControl, initX - (lenght * step) , initY, i * step);
 				}
-
-				Console.WriteLine(@"右翻牌区数：" + lenght + "\t" + idx);
-				 lenght = (fSize - idx) / 2;
-				for (int i = 0; i < lenght; i++) // 绘制左边
-				{
-					FruitObject fruitObject = fruitObjects[idx++];
-					fruitObject.X = 0;
-					fruitObject.Y = MaxHeight + 1;
-					fruitObject.Level = i;
-					fruitObject.ShowFold(_imageControl, initX + (lenght * step), initY, -i * step, false);
-				}
-
-				Console.WriteLine(@"左翻牌区数：" + lenght + "\t" + idx);
-				
+				Console.WriteLine(@"翻牌区数：" + lenght + "\t" + idx);
 			}
 		}
 
@@ -128,6 +115,10 @@ namespace yanglegeyang {
 			int leftX = 15;
 			int width = this.Width - leftX - 15;
 			int height = this.Height - leftX - 15;
+		}
+
+		private void Form1_Resize(object sender, EventArgs e) {
+			ReDrawImagePanel();
 		}
 	}
 }

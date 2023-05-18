@@ -57,9 +57,9 @@ namespace yanglegeyang.utils {
 		}
 		private static String ReadSkinPath(bool isRandom){
 			if(isRandom){
-				return "/static/skins/a" + _random.Next(8);
+				return "/static/skins/a" + _random.Next(1, 5);
 			}else{
-				return "/static/skins/a2";
+				return "/static/skins/a1";
 			}
 		}
 		

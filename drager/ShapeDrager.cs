@@ -9,12 +9,12 @@ namespace yanglegeyang.drager {
 		// 是否图标模式
 		bool iconType = false;
 
-		public ShapeDrager(Control parent) : this(parent, false)
+		public ShapeDrager() : this(false)
 		{
 			
 		}
 
-		public ShapeDrager(Control parent, bool icontype)
+		public ShapeDrager(bool icontype)
 		{
 			this.iconType = icontype;
 			this.TabStop = true;
@@ -34,6 +34,12 @@ namespace yanglegeyang.drager {
 			this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			this.BackColor = Color.Transparent;
 			this.BackgroundImageLayout = ImageLayout.Stretch;
+			this.Width = 80;
+			this.Height = 80;
+			// 设置双缓冲
+			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.AllPaintingInWmPaint, true);
+			// 设置图片居中
+			this.SetStyle(ControlStyles.UserPaint, true);
 		}
 
 		public double Rotation => rotation;

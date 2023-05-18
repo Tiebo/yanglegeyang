@@ -6,20 +6,21 @@ using System;
 namespace yanglegeyang.container {
 	public partial class ImageControl : Panel, IScaleFunction {
 		// Backgroud color
-		Color backgroundColor = Color.White;
+		Color _backgroundColor = Color.White;
 
 		// Spacing
-		int step = 40;
+		int _step = 40;
 
 		// Scaling, each step +-5
-		int scale = 100;
+		int _scale = 100;
 
 		// Background color
-		Color bgColor = Color.FromArgb(195, 254, 139);
+		Color _bgColor = Color.FromArgb(195, 254, 139);
 
 		// Background icon color
-		Color grassColor = Color.FromArgb(95, 154, 39);
-		Random random = new Random();
+		Color _grassColor = Color.FromArgb(95, 154, 39);
+		
+		Random _random = new Random();
 
 		public ImageControl() {
 			this.BorderStyle = BorderStyle.None;
@@ -30,14 +31,13 @@ namespace yanglegeyang.container {
 		protected override void OnPaint(PaintEventArgs e) {
 			Graphics g = e.Graphics;
 			base.OnPaint(e);
-
 			ClearPane(g);
 
 			// Apply scaling factor
 			Matrix transformMatrix = g.Transform.Clone();
-			g.ScaleTransform((float) scale / 100, (float) scale / 100);
+			g.ScaleTransform((float) _scale / 100, (float) _scale / 100);
 
-			g.Clear(backgroundColor);
+			g.Clear(_backgroundColor);
 			DrawX(g);
 
 			g.Transform = transformMatrix;
@@ -48,59 +48,59 @@ namespace yanglegeyang.container {
 		}
 
 		public void Reset() {
-			scale = 100;
+			_scale = 100;
 			Scale(0);
 		}
 
-		public void Scale(int step) {
-			scale += step;
-			if (scale < 20) {
-				scale = 20;
+		public void Scale(int step1) {
+			_scale += step1;
+			if (_scale < 20) {
+				_scale = 20;
 			}
 
-			if (scale > 500) {
-				scale = 500;
+			if (_scale > 500) {
+				_scale = 500;
 			}
 
 			ApplyZoom();
 		}
 
 		private void ApplyZoom() {
-			this.Size = new Size((int) (scale / 100f * this.Width), (int) (scale / 100f * this.Height));
+			this.Size = new Size((int) (_scale / 100f * this.Width), (int) (_scale / 100f * this.Height));
 			this.Invalidate();
 		}
 
 		private void DrawX(Graphics g) {
 			int size = 20;
-			int width = (int) (this.Width / (scale / 100f));
-			int height = (int) (this.Height / (scale / 100f));
-			int skip = (int) (step * scale / 100f);
+			int width = (int) (this.Width / (_scale / 100f));
+			int height = (int) (this.Height / (_scale / 100f));
+			int skip = (int) (_step * _scale / 100f);
 			Graphics graphics = g;
 			graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
 			// Background color
-			graphics.Clear(bgColor);
+			graphics.Clear(_bgColor);
 
 			// Set pen color and size
-			Pen pen = new Pen(grassColor, 2);
+			Pen pen = new Pen(_grassColor, 2);
 
 			// Randomly draw different-sized shapes
 			for (int i = 0; i < width; i += skip) {
-				graphics.DrawRectangle(pen, random.Next(width), random.Next(height), random.Next(size),
-					random.Next(size));
+				graphics.DrawRectangle(pen, _random.Next(width), _random.Next(height), _random.Next(size),
+					_random.Next(size));
 				
 				try {
-					graphics.DrawArc(pen, random.Next(width), random.Next(height), 15, 15,
-						random.Next(360), random.Next(360));
+					graphics.DrawArc(pen, _random.Next(width), _random.Next(height), 15, 15,
+						_random.Next(360), _random.Next(360));
 				}
 				catch (Exception e) {
 					Console.WriteLine(e);
 					throw;
 				}
-				graphics.DrawEllipse(pen, random.Next(width), random.Next(height), random.Next(size),
-					random.Next(size));
-				DrawRoundedRect(graphics, pen, random.Next(width), random.Next(height), random.Next(size),
-					random.Next(size), random.Next(10, 50));
+				graphics.DrawEllipse(pen, _random.Next(width), _random.Next(height), _random.Next(size),
+					_random.Next(size));
+				DrawRoundedRect(graphics, pen, _random.Next(width), _random.Next(height), _random.Next(size),
+					_random.Next(size), _random.Next(10, 50));
 			}
 		}
 

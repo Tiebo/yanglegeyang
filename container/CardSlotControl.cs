@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using yanglegeyang.components;
-using yanglegeyang.utils;
 
 namespace yanglegeyang.container {
 	public partial class CardSlotControl : Panel {
@@ -43,8 +42,6 @@ namespace yanglegeyang.container {
 
 		Color borderColor = Color.FromArgb(198, 128, 48);
 
-		// 圆角幅度
-		int arc = 15;
 		List<FruitObject> slots = new List<FruitObject>();
 		int _initX;
 		int _initY;
@@ -59,7 +56,7 @@ namespace yanglegeyang.container {
 			this._initX = initX;
 			this.Size = new Size(FruitObject.DefaultWidth * slot + step * 2 + borderSize * 2,
 				FruitObject.DefaultHeight + step * 2 + borderSize * 2);
-			this.Location = new Point(initX, initY);
+			this.Location = new Point(_initX, _initY);
 			imageContainer.Controls.Add(this);
 		}
 
@@ -72,15 +69,7 @@ namespace yanglegeyang.container {
 			// 验卡区的卡片删除点击事件
 			obj.RemoveImageCantainer();
 			// Retrieve the delegate list from the MouseClick event handler.
-			
-			// var mouseListeners = obj.Fruits.Click;
-			// if (mouseListeners != null) {
-			// 	foreach (var mouseListener in mouseListeners) {
-			// 		obj.Fruits.MouseClick -= mouseListener;
-			// 	}
-			// }
-
-
+			obj.RemoveClick();
 			// 排序验卡区中的图片
 			slots = slots.OrderBy(x => x.ImageName).ToList();
 			// 3张图片的判断，如果有直接消除，思路是：分组后看每组数量是否超过3张如果超过则消除
@@ -88,6 +77,7 @@ namespace yanglegeyang.container {
 			foreach (var group in groups) {
 				List<FruitObject> objects = group.ToList();
 				if (objects.Count == 3) {
+					Console.WriteLine(@"消除图片");
 					if (audioClip != null)
 						audioClip.Play();
 					// 消除的元素直接从集合中删除
