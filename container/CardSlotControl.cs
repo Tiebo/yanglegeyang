@@ -1,31 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Media;
 using System.Windows.Forms;
 using yanglegeyang.components;
 
 namespace yanglegeyang.container {
 	public partial class CardSlotControl : Panel {
-		static System.Media.SoundPlayer audioClip = null;
-		static System.Media.SoundPlayer failClip = null;
-
+		static SoundPlayer audioClip = null;
+		static SoundPlayer failClip = null;
+		
 		static CardSlotControl() {
-			// try {
-			// 	audioClip = new System.Media.SoundPlayer(ReadResourceUtil.ReadAudio("win.wav"));
-			// }
-			// catch (Exception e) {
-			// 	Console.WriteLine(e.Message);
-			// }
-			//
-			// try {
-			// 	failClip = new System.Media.SoundPlayer(ReadResourceUtil.ReadAudio("fail.wav"));
-			// }
-			// catch (Exception e) {
-			// 	Console.WriteLine(e.Message);
-			// }
-		}
+			audioClip = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
+			failClip = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
 
+			string audioPath = "./static/audio/win.wav";
+			string failPath = "./static/audio/fail.wav";
+			if (File.Exists(audioPath))
+			{
+				using (Stream stream = File.OpenRead(audioPath))
+				{
+					audioClip.Stream = stream;
+					audioClip.Load();
+				}
+				
+				using (Stream stream = File.OpenRead(failPath))
+				{
+					failClip.Stream = stream;
+					failClip.Load();
+				}
+			}
+			else
+			{
+				Console.WriteLine($@"Audio file not found: {audioPath}");
+			}
+		}
+	
 		// 卡片间隔
 		int step = 5;
 
@@ -83,8 +95,7 @@ namespace yanglegeyang.container {
 				List<FruitObject> objects = group.ToList();
 				if (objects.Count == 3) {
 					Console.WriteLine(@"消除图片");
-					if (audioClip != null)
-						audioClip.Play();
+					audioClip.Play();
 					// 消除的元素直接从集合中删除
 					foreach (FruitObject fruitObject in objects) {
 						fruitObject.RemoveCardSlotCantainer();
@@ -99,7 +110,7 @@ namespace yanglegeyang.container {
 			// 判断游戏是否结束
 			if (slots.Count == slot) {
 				isOver = true;
-				failClip?.Play();
+				failClip.Play();
 				MessageBox.Show(this.Parent, @"Game Over：槽满了", @"Tip", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}

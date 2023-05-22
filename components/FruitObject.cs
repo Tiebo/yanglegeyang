@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Media;
 using System.Windows.Forms;
 using yanglegeyang.container;
+using yanglegeyang.utils;
 
 namespace yanglegeyang.components {
 	public class FruitObject {
@@ -9,9 +12,10 @@ namespace yanglegeyang.components {
 		public static readonly int DefaultHeight = 80;
 
 		private static Random _random = new Random();
-
+		private static SoundPlayer audioClip;
 		// 存放的卡片
 		public Fruits Fruits { get; set; }
+		
 
 		// 所在层的x序号
 		public int X { get; set; }
@@ -45,7 +49,25 @@ namespace yanglegeyang.components {
 			this._cardSlotControl = cardSlotCantainer;
 			this.Fruits.Cursor = Cursors.Hand;
 		}
+		
+		static FruitObject()
+		{
+			audioClip = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
 
+			string audioPath = "./static/audio/click.wav";
+			if (File.Exists(audioPath))
+			{
+				using (Stream stream = File.OpenRead(audioPath))
+				{
+					audioClip.Stream = stream;
+					audioClip.Load();
+				}
+			}
+			else
+			{
+				Console.WriteLine($@"Audio file not found: {audioPath}");
+			}
+		}
 		public void Show(ImageControl imageControl1, int initX, int initY) {
 			this._imageControl = imageControl1;
 			// 随机生成开始坐标偏移量，实现上下层错落有致的视觉感
@@ -75,10 +97,13 @@ namespace yanglegeyang.components {
 			AddClick();
 		}
 
-		
+		private int pos = 0;
+		private int pos1 = 0;
+		private int dx = 200;
 		private void F_MouseClick(object sender, MouseEventArgs e) {
 			if (_flag)
 			{
+				audioClip.Play();
 				_cardSlotControl.AddSlot(this);
 			}
 		}
@@ -97,7 +122,7 @@ namespace yanglegeyang.components {
 			if (MySpace.FoldQueue.Contains(this))
 				MySpace.Fold_update();
 			Rectangle visibleRect = Fruits.DisplayRectangle;
-			SpaceManager.RemoveCompontFlag(this);
+			MySpace.remove_level_fruit(this);
 			_imageControl.Controls.Remove(Fruits);
 			_imageControl.Invalidate(visibleRect);
 		}

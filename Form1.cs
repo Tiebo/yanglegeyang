@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Timers;
 using System.Windows.Forms;
 using yanglegeyang.components;
 using yanglegeyang.container;

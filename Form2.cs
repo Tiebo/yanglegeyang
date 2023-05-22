@@ -14,12 +14,12 @@ namespace yanglegeyang {
 			this.Hide();
 			frm.ShowDialog();
 		}
-		private Point mPoint;
+		private Point _mPoint;
     
 
 		private void Form2_MouseDown(object sender, MouseEventArgs e)
 		{
-			mPoint = new Point(e.X, e.Y);
+			_mPoint = new Point(e.X, e.Y);
 		}
 
 		private void Form2_MouseMove(object sender, MouseEventArgs e)
@@ -27,7 +27,7 @@ namespace yanglegeyang {
 
 			if (e.Button == MouseButtons.Left)
 			{
-				this.Location = new Point(this.Location.X + e.X - mPoint.X, this.Location.Y + e.Y - mPoint.Y);
+				this.Location = new Point(this.Location.X + e.X - _mPoint.X, this.Location.Y + e.Y - _mPoint.Y);
 			}
 		}
 

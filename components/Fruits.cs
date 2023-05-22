@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using yanglegeyang.drager;
 using System.Drawing.Drawing2D;
 
 namespace yanglegeyang.components {
 	/// <summary>
 	/// 卡片对象
 	/// </summary>
-	public class Fruits : ShapeDrager {
+	public class Fruits : PictureBox {
 		// 卡片上放置的图形
 		private Image _image;
 		// 卡片名称
@@ -26,18 +25,28 @@ namespace yanglegeyang.components {
 		public Fruits(Image image, string imageName) {
 			this._image = image;
 			this.ImageName = imageName;
+			InitShape();
 		}
-
+	
+		private void InitShape()
+		{
+			this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			this.BackColor = Color.Transparent;
+			this.BackgroundImageLayout = ImageLayout.Stretch;
+			this.Width = 80;
+			this.Height = 80;
+			// 设置双缓冲
+			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.AllPaintingInWmPaint, true);
+			// 设置图片居中
+			this.SetStyle(ControlStyles.UserPaint, true);
+		}
+		
 		protected override void OnPaint(PaintEventArgs e) {
 			Graphics g = e.Graphics;
 			g.SmoothingMode = SmoothingMode.AntiAlias;
 			Pen pen = new Pen(Color.Black, 2);
-			g.DrawRectangle(pen, new Rectangle(0, 0, Width - 1, Height - 1));
 			
-
-			Matrix matrix = new Matrix();
-			matrix.RotateAt((float) (Rotation * 180 / Math.PI), new PointF(Width / 2f, Height / 2f));
-			g.Transform = matrix;
+			g.DrawRectangle(pen, new Rectangle(0, 0, Width - 1, Height - 1));
 			// 绘制底色
 			g.FillRectangle(new SolidBrush(_bgColor), new Rectangle(0, 0, Width, Height));
 			// 绘制白色
@@ -53,9 +62,6 @@ namespace yanglegeyang.components {
 				g.DrawImage(_image, new Rectangle(x, y, imageWidth, imageHeight));
 			}
 			if (_alpha < 1) {
-				g.CompositingMode = CompositingMode.SourceOver;
-				g.CompositingQuality = CompositingQuality.HighQuality;
-				
 				g.FillRectangle(new SolidBrush(Color.FromArgb((int) Math.Round(Alpha * 255), Color.Gray)),
 					new Rectangle(0, 0, Width, Height - 5));
 			}

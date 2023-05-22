@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace yanglegeyang.components {
 	public class OneLevelFruits {
@@ -17,10 +18,9 @@ namespace yanglegeyang.components {
 
 		public static OneLevelFruits[] AllLevelFruits = new OneLevelFruits[10];
 
-		public static string Fold_update() {
+		public static void Fold_update() {
 			FoldQueue.Dequeue();
 			FoldQueue.Peek().SetFlag(true);
-			return "success";
 		}
 
 		public static void Add_fold_list(FruitObject fruitObject) {
@@ -50,6 +50,7 @@ namespace yanglegeyang.components {
 		}
 
 		public static bool Judge_top(FruitObject fruitObject) {
+			judge_top_1(fruitObject);
 			int level = fruitObject.Level;
 			// 顶层的一定可以被点击
 			if (level == 0) return true;
@@ -61,7 +62,6 @@ namespace yanglegeyang.components {
 			 *	4 5 6
 			 *	7 8 9
 			 */
-
 			var r1 = new Rectangle(new Point(x1, y1), new Size(FruitObject.DefaultWidth, FruitObject.DefaultHeight));
 
 			for (int i = level - 1; i >= 1; i--) {
@@ -84,6 +84,18 @@ namespace yanglegeyang.components {
 				}
 			}
 
+			return true;
+		}
+
+		public static bool judge_top_1(FruitObject fruitObject) {
+			int level = fruitObject.Level;
+			int x = fruitObject.X;
+			int y = fruitObject.Y;
+
+			for (int i = level - 1; i >= 0; i--) {
+				var xFruitObject = AllLevelFruits[i].LevelFruit.Find(f => f.X == fruitObject.X);
+				var yFruitObject = AllLevelFruits[i].LevelFruit.Find(f => f.Y == fruitObject.Y);
+			}
 			return true;
 		}
 

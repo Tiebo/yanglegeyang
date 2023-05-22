@@ -22,4 +22,4 @@ D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.pdb
 D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.container.CardSlotControl.resources
 D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.container.ImageControl.resources
 D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.csproj.CopyComplete
-D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.drager.ShapeDrager.resources
+D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.Form2.resources
