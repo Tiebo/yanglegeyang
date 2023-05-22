@@ -40,7 +40,7 @@ namespace yanglegeyang.components {
 
 		public static void update_flag(FruitObject fruitObject) {
 			int level = fruitObject.Level;
-			for (int i = level; i < 10; i++) {
+			for (int i = level + 1; i < 10; i++) {
 				if (AllLevelFruits[level].LevelFruit.Count == 0) {
 					break;
 				}

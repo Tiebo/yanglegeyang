@@ -57,7 +57,7 @@ namespace yanglegeyang.components {
 				g.CompositingQuality = CompositingQuality.HighQuality;
 				
 				g.FillRectangle(new SolidBrush(Color.FromArgb((int) Math.Round(Alpha * 255), Color.Gray)),
-					ClientRectangle);
+					new Rectangle(0, 0, Width, Height - 5));
 			}
 			base.OnPaint(e);
 		}

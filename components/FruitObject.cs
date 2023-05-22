@@ -109,6 +109,7 @@ namespace yanglegeyang.components {
 		public void SetFlag(bool value) {
 			Fruits.Alpha = value ? 1f : 0.6f;
 			this._flag = value;
+			Fruits.Invalidate();
 		}
 	}
 }
