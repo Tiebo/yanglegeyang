@@ -147,10 +147,15 @@ namespace yanglegeyang.components {
 				this.Fruits.Width = 80;
 				this.Fruits.Height = 80;
 				audioClip.Play();
+				
 				_oldLocation = this.Fruits.Location;
+				
 				this.Fruits.Visible = false;
+				
 				var res = _cardSlotControl.AddSlot(this);
+				
 				this.Fruits.Location = _oldLocation;
+				
 				this.Fruits.Visible = true;
 				if (res != null) {
 					DrawAnimation(res["x"], res["y"]);

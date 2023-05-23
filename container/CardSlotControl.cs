@@ -126,7 +126,40 @@ namespace yanglegeyang.container {
 			if (_slots.Count == slot) {
 				isOver = true;
 				failClip.Play();
-				MessageBox.Show(this.Parent, @"Game Over：槽满了", @"Tip", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				HomeForm.Game.waveOut.Stop();
+				int currentFormWidth = this.Width;
+				int currentFormHeight = this.Height;
+				int currentFormX = this.Location.X;
+				int currentFormY = this.Location.Y;
+				FailForm f = new FailForm();
+				// 计算 f 窗体在当前窗体中居中所需的位置
+				int fWidth = f.Width;
+				int fHeight = f.Height;
+				int fX = currentFormX + (currentFormWidth - fWidth) / 2;
+				int fY = currentFormY + (currentFormHeight - fHeight) / 2;
+
+				// 设置 f 窗体的位置为居中位置
+				f.StartPosition = FormStartPosition.Manual;
+				f.Location = new Point(fX, fY);
+				
+				f.FormClosed += (s, args) =>
+				{
+					// 清空卡槽
+					_slots.Clear();
+					// 继续游戏的代码
+					isOver = false;
+
+					// 继续游戏的代码
+					isOver = false;
+
+					// 绘制卡槽
+					Redraw();
+
+					HomeForm.Game.waveOut.Play();
+					Invalidate();
+				};
+				
+				f.ShowDialog();
 				return null;
 			}
 			Console.WriteLine(MySpace.GetNumber());

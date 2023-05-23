@@ -25,7 +25,7 @@ namespace yanglegeyang {
             }
             axWindowsMediaPlayer1.Visible = true;
             // 设置视频文件的路径
-            string videoPath = "1.mp4";
+            string videoPath = "./static/1.mp4";
 
             // 隐藏其他控件
             foreach (Control control in this.Controls)

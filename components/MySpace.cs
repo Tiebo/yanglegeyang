@@ -42,6 +42,8 @@ namespace yanglegeyang.components {
 
 			for (int i = level + 1; i < 10; i++) {
 				try {
+					if (AllLevelFruits[i] == null) continue;
+					if (AllLevelFruits[i].LevelFruit == null) continue;
 					if (AllLevelFruits[i].LevelFruit.Count == 0) {
 						break;
 					}
@@ -53,7 +55,7 @@ namespace yanglegeyang.components {
 						}
 					});
 				}
-				catch (Exception e) {
+				catch (NullReferenceException e) {
 					// ignored
 				}
 			}

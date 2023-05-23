@@ -127,6 +127,9 @@
     <EmbeddedResource Include="container\ImageControl.resx">
       <DependentUpon>ImageControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FailForm.resx">
+      <DependentUpon>FailForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GameObject.resx">
       <DependentUpon>GameObject.cs</DependentUpon>
     </EmbeddedResource>
