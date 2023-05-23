@@ -4,7 +4,6 @@ using System.IO;
 using System.Media;
 using System.Windows.Forms;
 using yanglegeyang.container;
-using yanglegeyang.utils;
 
 namespace yanglegeyang.components {
 	public class FruitObject {
@@ -12,24 +11,29 @@ namespace yanglegeyang.components {
 		public static readonly int DefaultHeight = 80;
 
 		private static Random _random = new Random();
+
 		private static SoundPlayer audioClip;
+
 		// 存放的卡片
 		public Fruits Fruits { get; set; }
-		
+
 
 		// 所在层的x序号
 		public int X { get; set; }
+
 		// 所在层的y序号
 		public int Y { get; set; }
+
 		// 所在层序号
 		public int Level { get; set; }
+
 		// 卡片名称,有点重复了，后续优化
 		public string ImageName { get; set; } //名称，非常重要，安装名称来判断是否为同一类型
-		
-		private bool _flag = false; //是否可以点击
+
+		public bool Flag = false; //是否可以点击
 
 		ImageControl _imageControl;
-		
+
 		CardSlotControl _cardSlotControl;
 
 		/// <summary>
@@ -42,6 +46,8 @@ namespace yanglegeyang.components {
 		/// <param name="level"></param>
 		public FruitObject(CardSlotControl cardSlotCantainer, Fruits fruits, int x, int y, int level) {
 			this.Fruits = fruits;
+
+
 			this.X = x;
 			this.Y = y;
 			this.Level = level;
@@ -49,44 +55,44 @@ namespace yanglegeyang.components {
 			this._cardSlotControl = cardSlotCantainer;
 			this.Fruits.Cursor = Cursors.Hand;
 		}
-		
-		static FruitObject()
-		{
+
+		static FruitObject() {
 			audioClip = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
 
 			string audioPath = "./static/audio/click.wav";
-			if (File.Exists(audioPath))
-			{
-				using (Stream stream = File.OpenRead(audioPath))
-				{
+			if (File.Exists(audioPath)) {
+				using (Stream stream = File.OpenRead(audioPath)) {
 					audioClip.Stream = stream;
 					audioClip.Load();
 				}
 			}
-			else
-			{
+			else {
 				Console.WriteLine($@"Audio file not found: {audioPath}");
 			}
 		}
-		public void Show(ImageControl imageControl1, int initX, int initY) {
+
+		public void Show(ImageControl imageControl1, int initX, int initY, bool rx, bool ry) {
 			this._imageControl = imageControl1;
 			// 随机生成开始坐标偏移量，实现上下层错落有致的视觉感
-			bool randomWidth = _random.Next(10) % 2 == 0;
-			bool randomHeight = _random.Next(10) % 2 == 0;
-			int pointX = initX + X * DefaultWidth + (randomWidth ? DefaultWidth / 2 : 0);
-			int pointY = initY + Y * DefaultHeight + (randomHeight ? DefaultHeight / 2 : 0);
+			bool randomX = rx;
+			bool randomY = ry;
+
+			int pointX = initX + X * DefaultWidth + 
+			             (randomX ? DefaultWidth / 2 : 0);
+			int pointY = initY + Y * DefaultHeight + 
+			             (randomY ? DefaultHeight / 2 : 0);
+
 			// 设置卡片显示在背景面板中位置
 			Fruits.SetBounds(pointX, pointY, DefaultWidth, DefaultHeight);
 			// 记录卡片的空间信息
-			MySpace.Add_level_fruit(this);
-			// SpaceManager.Rectangle(this);
 			imageControl1.Controls.Add(Fruits);
+			MySpace.Add_level_fruit(this);
 			AddClick();
 		}
 
 		public void ShowFold(ImageControl imageControl1, int initX, int initY, int offset) {
 			this._imageControl = imageControl1;
-			// 随机生成开始坐标偏移量，实现上下层错落有致的视觉感
+
 			int pointX = initX + X * DefaultWidth + offset;
 			int pointY = initY + Y * DefaultHeight - DefaultHeight / 4;
 			// 设置卡片显示在背景面板中位置
@@ -97,16 +103,61 @@ namespace yanglegeyang.components {
 			AddClick();
 		}
 
-		private int pos = 0;
-		private int pos1 = 0;
-		private int dx = 200;
-		private void F_MouseClick(object sender, MouseEventArgs e) {
-			if (_flag)
-			{
-				audioClip.Play();
-				_cardSlotControl.AddSlot(this);
+		private Point _targetPosition;
+		private Timer _timer;
+		private Point _oldLocation;
+
+		public void DrawAnimation(int tx, int ty) {
+			_imageControl.Controls.Add(this.Fruits);
+			this.Fruits.BringToFront();
+			// 设置目标位置
+			_targetPosition = new Point(tx, ty);
+
+			// 创建一个Timer
+			_timer = new Timer();
+			_timer.Interval = 1000 / 60;
+			_timer.Tick += Update;
+			_timer.Start();
+		}
+
+		private float t;
+
+		private void Update(object sender, EventArgs e) {
+			// 使用线性插值算法计算新的位置
+			t += 0.2f;
+			int x = (int) Lerp(_oldLocation.X, _targetPosition.X);
+			int y = (int) Lerp(_oldLocation.Y, _targetPosition.Y);
+			this.Fruits.Location = new Point(x, y);
+
+			// 如果已经到达目标位置，停止Timer
+			if (t >= 1) {
+				_timer.Stop();
+				this.Fruits.Location = new Point(this.Fruits.Location.X - _cardSlotControl.InitX,
+					this.Fruits.Location.Y - _cardSlotControl.InitY);
+				_cardSlotControl.Controls.Add(this.Fruits);
 			}
 		}
+
+		private float Lerp(float start, float end) {
+			return (1 - t) * start + t * end;
+		}
+
+		private void F_MouseClick(object sender, MouseEventArgs e) {
+			if (Flag) {
+				this.Fruits.Width = 80;
+				this.Fruits.Height = 80;
+				audioClip.Play();
+				_oldLocation = this.Fruits.Location;
+				this.Fruits.Visible = false;
+				var res = _cardSlotControl.AddSlot(this);
+				this.Fruits.Location = _oldLocation;
+				this.Fruits.Visible = true;
+				if (res != null) {
+					DrawAnimation(res["x"], res["y"]);
+				}
+			}
+		}
+
 		/**
 	     * 卡片点击事件：点击后添加到验卡区
 	     */
@@ -119,10 +170,7 @@ namespace yanglegeyang.components {
 		}
 
 		public void RemoveImageCantainer() {
-			if (MySpace.FoldQueue.Contains(this))
-				MySpace.Fold_update();
 			Rectangle visibleRect = Fruits.DisplayRectangle;
-			MySpace.remove_level_fruit(this);
 			_imageControl.Controls.Remove(Fruits);
 			_imageControl.Invalidate(visibleRect);
 		}
@@ -132,8 +180,8 @@ namespace yanglegeyang.components {
 		}
 
 		public void SetFlag(bool value) {
-			Fruits.Alpha = value ? 1f : 0.6f;
-			this._flag = value;
+			Fruits.Alpha = value ? 1f : 0.65f;
+			this.Flag = value;
 			Fruits.Invalidate();
 		}
 	}

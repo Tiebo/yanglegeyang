@@ -7,19 +7,23 @@ namespace yanglegeyang.components {
 	/// <summary>
 	/// 卡片对象
 	/// </summary>
-	public class Fruits : PictureBox {
+	public class Fruits : Panel {
 		// 卡片上放置的图形
 		private Image _image;
+
 		// 卡片名称
 		public string ImageName { get; set; }
+
 		// 透明度
 		private float _alpha = 0.65f;
+
+		public bool IsSlot { get; set; }
 
 		public float Alpha {
 			get => _alpha;
 			set => _alpha = value;
 		}
-		
+
 		private Color _bgColor = Color.FromArgb(138, 158, 58);
 
 		public Fruits(Image image, string imageName) {
@@ -27,25 +31,26 @@ namespace yanglegeyang.components {
 			this.ImageName = imageName;
 			InitShape();
 		}
-	
-		private void InitShape()
-		{
+
+		private void InitShape() {
 			this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			this.BackColor = Color.Transparent;
 			this.BackgroundImageLayout = ImageLayout.Stretch;
 			this.Width = 80;
 			this.Height = 80;
 			// 设置双缓冲
-			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.AllPaintingInWmPaint, true);
+			this.SetStyle(
+				ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.AllPaintingInWmPaint,
+				true);
 			// 设置图片居中
 			this.SetStyle(ControlStyles.UserPaint, true);
 		}
-		
+
 		protected override void OnPaint(PaintEventArgs e) {
 			Graphics g = e.Graphics;
 			g.SmoothingMode = SmoothingMode.AntiAlias;
 			Pen pen = new Pen(Color.Black, 2);
-			
+
 			g.DrawRectangle(pen, new Rectangle(0, 0, Width - 1, Height - 1));
 			// 绘制底色
 			g.FillRectangle(new SolidBrush(_bgColor), new Rectangle(0, 0, Width, Height));
@@ -61,12 +66,45 @@ namespace yanglegeyang.components {
 				int y = (Height - 5 - imageHeight) / 2;
 				g.DrawImage(_image, new Rectangle(x, y, imageWidth, imageHeight));
 			}
+
 			if (_alpha < 1) {
 				g.FillRectangle(new SolidBrush(Color.FromArgb((int) Math.Round(Alpha * 255), Color.Gray)),
 					new Rectangle(0, 0, Width, Height - 5));
 			}
+
 			base.OnPaint(e);
 		}
 
+		private Timer _timer = new Timer();
+		protected override void OnMouseHover(EventArgs e) {
+			if (Math.Abs(this._alpha - 1f) > 0.1) return;
+			if (IsSlot) return;
+			
+			this.Width = 90;
+			this.Height = 90;
+			Invalidate();
+			base.OnMouseHover(e);
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e) {
+			if (Math.Abs(this._alpha - 1f) > 0.1) return;
+			if (IsSlot) return;
+			
+			this.Width = 90;
+			this.Height = 90;
+			Invalidate();
+			base.OnMouseHover(e);
+			base.OnMouseMove(e);
+		}
+
+		protected override void OnMouseLeave(EventArgs e) {
+			if (Math.Abs(this._alpha - 1f) > 0.1) return;
+			if (IsSlot) return;
+			
+			this.Width = 80;
+			this.Height = 80;
+			Invalidate();
+			base.OnMouseLeave(e);
+		}
 	}
 }

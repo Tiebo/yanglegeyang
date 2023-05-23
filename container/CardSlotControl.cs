@@ -1,43 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Windows.Forms;
 using yanglegeyang.components;
+using yanglegeyang.utils;
 
 namespace yanglegeyang.container {
 	public partial class CardSlotControl : Panel {
 		static SoundPlayer audioClip = null;
 		static SoundPlayer failClip = null;
-		
+
 		static CardSlotControl() {
 			audioClip = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
 			failClip = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
 
 			string audioPath = "./static/audio/win.wav";
 			string failPath = "./static/audio/fail.wav";
-			if (File.Exists(audioPath))
-			{
-				using (Stream stream = File.OpenRead(audioPath))
-				{
+			if (File.Exists(audioPath)) {
+				using (Stream stream = File.OpenRead(audioPath)) {
 					audioClip.Stream = stream;
 					audioClip.Load();
 				}
-				
-				using (Stream stream = File.OpenRead(failPath))
-				{
+
+				using (Stream stream = File.OpenRead(failPath)) {
 					failClip.Stream = stream;
 					failClip.Load();
 				}
 			}
-			else
-			{
+			else {
 				Console.WriteLine($@"Audio file not found: {audioPath}");
 			}
 		}
-	
+
 		// 卡片间隔
 		int step = 5;
 
@@ -48,49 +46,63 @@ namespace yanglegeyang.container {
 		int slot = 7;
 
 		// 是否结束
-		bool isOver = false;
+		bool isOver;
 
 		Color bgColor = Color.FromArgb(157, 97, 27);
 
 		Color borderColor = Color.FromArgb(198, 128, 48);
 
-		List<FruitObject> slots = new List<FruitObject>();
-		int _initX;
-		int _initY;
+		private ImageControl _imageControl;
+
+		List<FruitObject> _slots = new List<FruitObject>();
+		public int InitX;
+		public int InitY;
 
 		public CardSlotControl(ImageControl imageContainer, int initX, int initY) {
-			this._initY += 20;
-			this._initX += -borderSize;
 			this.BorderStyle = BorderStyle.None;
 			this.BackColor = Color.Transparent;
 			this.DoubleBuffered = true;
-			this._initY = initY;
-			this._initX = initX;
+			this.InitY = initY;
+			this.InitX = initX;
+			this.InitY += 20;
+			this.InitX += -borderSize;
 			this.Size = new Size(FruitObject.DefaultWidth * slot + step * 2 + borderSize * 2,
 				FruitObject.DefaultHeight + step * 2 + borderSize * 2);
-			this.Location = new Point(_initX, _initY);
+			this.Location = new Point(InitX, InitY);
 			imageContainer.Controls.Add(this);
+			this._imageControl = imageContainer;
 		}
 
 		// 点击添加
-		public void AddSlot(FruitObject obj) {
+		public Dictionary<string, int> AddSlot(FruitObject obj) {
 			if (isOver)
-				return;
-
-			slots.Add(obj);
+				return null;
+			Point start = obj.Fruits.Location;
+			start.Y = -start.Y;
+			_slots.Add(obj);
+	
 			// 验卡区的卡片删除点击事件
 			obj.RemoveImageCantainer();
+			obj.Fruits.IsSlot = true;
+			
+			if (MySpace.FoldQueue.Contains(obj)) {
+				MySpace.Fold_update();
+			}
+
 			// 从层级中删除该卡片
-			Console.WriteLine(obj.Level);
 			MySpace.remove_level_fruit(obj);
 			// 重新绘制底层
 			MySpace.update_flag(obj);
 			// Retrieve the delegate list from the MouseClick event handler.
 			obj.RemoveClick();
 			// 排序验卡区中的图片
-			slots = slots.OrderBy(x => x.ImageName).ToList();
+			_slots = _slots.OrderBy(x => x.ImageName).ToList();
+
+
+			var idx = _slots.FindIndex(f => f.Equals(obj));
+			int pointX = step + (idx) * FruitObject.DefaultWidth + borderSize / 2;
 			// 3张图片的判断，如果有直接消除，思路是：分组后看每组数量是否超过3张如果超过则消除
-			var groups = slots.GroupBy(x => x.ImageName);
+			var groups = _slots.GroupBy(x => x.ImageName);
 			foreach (var group in groups) {
 				List<FruitObject> objects = group.ToList();
 				if (objects.Count == 3) {
@@ -99,27 +111,55 @@ namespace yanglegeyang.container {
 					// 消除的元素直接从集合中删除
 					foreach (FruitObject fruitObject in objects) {
 						fruitObject.RemoveCardSlotCantainer();
+						fruitObject.RemoveImageCantainer();
 					}
 
-					slots.RemoveAll(x => objects.Contains(x));
+					_slots.RemoveAll(x => objects.Contains(x));
+					idx = -1;
 				}
 			}
 
 			// 新添加的卡片，显示到验卡区
 			Redraw();
+
 			// 判断游戏是否结束
-			if (slots.Count == slot) {
+			if (_slots.Count == slot) {
 				isOver = true;
 				failClip.Play();
 				MessageBox.Show(this.Parent, @"Game Over：槽满了", @"Tip", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
 			}
+			Console.WriteLine(MySpace.GetNumber());
+
+			if (_slots.Count == 0 && MySpace.GetNumber() == 0) {
+				isOver = true;
+				HomeForm.Game.Hide();
+				HomeForm.Game.waveOut.Stop();
+				HomeForm.Game = new GameObject(2);
+				HomeForm.Game.ShowDialog();
+				return null;
+			}
+
+			if (idx == -1) return null;
+
+			return new Dictionary<string, int> {
+				["x"] = pointX + InitX,
+				["y"] = borderSize + InitY
+			};
 		}
 
 		public void Redraw() {
 			this.Controls.Clear();
-			for (int i = 0; i < slots.Count; i++) {
-				FruitObject fruitObject = slots[i];
+			for (int i = 0; i < _slots.Count; i++) {
+				FruitObject fruitObject = _slots[i];
 				int pointX = step + i * FruitObject.DefaultWidth + borderSize / 2;
+
+				if (fruitObject.Fruits.Location.Y <= 20) {
+					int sx = fruitObject.Fruits.Bounds.X, sy = fruitObject.Fruits.Bounds.Y;
+					Animation animation = new Animation(fruitObject.Fruits, new Point(sx, sy),
+						new Point(pointX, borderSize), 100);
+					animation.Start();
+				}
 				fruitObject.Fruits.Location = new Point(pointX, borderSize);
 				this.Controls.Add(fruitObject.Fruits);
 			}

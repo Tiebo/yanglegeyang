@@ -65,4 +65,25 @@
   <data name="th" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\th.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="v2_6a93baa4bf3d6bcfb68dcf601599a35b_b" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\duqu.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="QQ图片20230523220125" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\QQ图片20230523220125.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_5EC26CB4FEA13C94C8B58A8C670C77A8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\_5EC26CB4FEA13C94C8B58A8C670C77A8.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="biaoti_1_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\biaoti_1_.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bu_1_" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bu_1_.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="shipin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\shipin.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

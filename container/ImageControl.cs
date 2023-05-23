@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System;
 
 namespace yanglegeyang.container {
-	public partial class ImageControl : Panel, IScaleFunction {
+	public partial class ImageControl : Panel {
 		// Backgroud color
 		Color _backgroundColor = Color.White;
 
@@ -46,30 +46,6 @@ namespace yanglegeyang.container {
 		private void ClearPane(Graphics g) {
 			g.Clear(this.BackColor);
 		}
-
-		public void Reset() {
-			_scale = 100;
-			Scale(0);
-		}
-
-		public void Scale(int step1) {
-			_scale += step1;
-			if (_scale < 20) {
-				_scale = 20;
-			}
-
-			if (_scale > 500) {
-				_scale = 500;
-			}
-
-			ApplyZoom();
-		}
-
-		private void ApplyZoom() {
-			this.Size = new Size((int) (_scale / 100f * this.Width), (int) (_scale / 100f * this.Height));
-			this.Invalidate();
-		}
-
 		private void DrawX(Graphics g) {
 			int size = 20;
 			int width = (int) (this.Width / (_scale / 100f));
