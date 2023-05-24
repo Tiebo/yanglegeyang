@@ -17,12 +17,6 @@ namespace yanglegeyang {
         public void button1_Click(object sender, EventArgs e)
         {
             
-            num++;
-            if (num == 2)
-            {
-                MessageBox.Show("您的观看视频次数已用光", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Application.Exit();
-            }
             axWindowsMediaPlayer1.Visible = true;
             // 设置视频文件的路径
             string videoPath = "./static/1.mp4";

@@ -54,37 +54,37 @@ namespace yanglegeyang.container {
 
 		private ImageControl _imageControl;
 
-		List<FruitObject> _slots = new List<FruitObject>();
+		public List<FruitObject> Slots = new List<FruitObject>();
+		
 		public int InitX;
 		public int InitY;
 
 		public CardSlotControl(ImageControl imageContainer, int initX, int initY) {
 			this.BorderStyle = BorderStyle.None;
-			this.BackColor = Color.Transparent;
-			this.DoubleBuffered = true;
 			this.InitY = initY;
 			this.InitX = initX;
 			this.InitY += 20;
-			this.InitX += -borderSize;
+			this.InitX -= borderSize;
 			this.Size = new Size(FruitObject.DefaultWidth * slot + step * 2 + borderSize * 2,
 				FruitObject.DefaultHeight + step * 2 + borderSize * 2);
 			this.Location = new Point(InitX, InitY);
 			imageContainer.Controls.Add(this);
 			this._imageControl = imageContainer;
+			this.BackColor = Color.Transparent;
+			this.DoubleBuffered = true;
 		}
 
 		// 点击添加
 		public Dictionary<string, int> AddSlot(FruitObject obj) {
 			if (isOver)
 				return null;
-			Point start = obj.Fruits.Location;
-			start.Y = -start.Y;
-			_slots.Add(obj);
+			Slots.Add(obj);
 	
-			// 验卡区的卡片删除点击事件
-			obj.RemoveImageCantainer();
+			// 从背景中删除
+			obj.RemoveImageContainer();
 			obj.Fruits.IsSlot = true;
 			
+			// 如果属于翻牌区
 			if (MySpace.FoldQueue.Contains(obj)) {
 				MySpace.Fold_update();
 			}
@@ -93,28 +93,25 @@ namespace yanglegeyang.container {
 			MySpace.remove_level_fruit(obj);
 			// 重新绘制底层
 			MySpace.update_flag(obj);
-			// Retrieve the delegate list from the MouseClick event handler.
-			obj.RemoveClick();
 			// 排序验卡区中的图片
-			_slots = _slots.OrderBy(x => x.ImageName).ToList();
+			Slots = Slots.OrderBy(x => x.ImageName).ToList();
 
-
-			var idx = _slots.FindIndex(f => f.Equals(obj));
+			// 判断是第几个元素
+			var idx = Slots.FindIndex(f => f.Equals(obj));
 			int pointX = step + (idx) * FruitObject.DefaultWidth + borderSize / 2;
 			// 3张图片的判断，如果有直接消除，思路是：分组后看每组数量是否超过3张如果超过则消除
-			var groups = _slots.GroupBy(x => x.ImageName);
+			var groups = Slots.GroupBy(x => x.ImageName);
 			foreach (var group in groups) {
 				List<FruitObject> objects = group.ToList();
 				if (objects.Count == 3) {
-					Console.WriteLine(@"消除图片");
 					audioClip.Play();
 					// 消除的元素直接从集合中删除
 					foreach (FruitObject fruitObject in objects) {
-						fruitObject.RemoveCardSlotCantainer();
-						fruitObject.RemoveImageCantainer();
+						fruitObject.RemoveCardSlotContainer();
+						fruitObject.RemoveImageContainer();
 					}
 
-					_slots.RemoveAll(x => objects.Contains(x));
+					Slots.RemoveAll(x => objects.Contains(x));
 					idx = -1;
 				}
 			}
@@ -123,7 +120,7 @@ namespace yanglegeyang.container {
 			Redraw();
 
 			// 判断游戏是否结束
-			if (_slots.Count == slot) {
+			if (Slots.Count == slot) {
 				isOver = true;
 				failClip.Play();
 				HomeForm.Game.waveOut.Stop();
@@ -145,7 +142,7 @@ namespace yanglegeyang.container {
 				f.FormClosed += (s, args) =>
 				{
 					// 清空卡槽
-					_slots.Clear();
+					Slots.Clear();
 					// 继续游戏的代码
 					isOver = false;
 
@@ -162,9 +159,8 @@ namespace yanglegeyang.container {
 				f.ShowDialog();
 				return null;
 			}
-			Console.WriteLine(MySpace.GetNumber());
 
-			if (_slots.Count == 0 && MySpace.GetNumber() == 0) {
+			if (Slots.Count == 0 && MySpace.GetLength() <= 0) {
 				isOver = true;
 				HomeForm.Game.Hide();
 				HomeForm.Game.waveOut.Stop();
@@ -183,11 +179,11 @@ namespace yanglegeyang.container {
 
 		public void Redraw() {
 			this.Controls.Clear();
-			for (int i = 0; i < _slots.Count; i++) {
-				FruitObject fruitObject = _slots[i];
+			for (int i = 0; i < Slots.Count; i++) {
+				FruitObject fruitObject = Slots[i];
 				int pointX = step + i * FruitObject.DefaultWidth + borderSize / 2;
 
-				if (fruitObject.Fruits.Location.Y <= 20) {
+				if (fruitObject.Fruits.Location.Y == 10) {
 					int sx = fruitObject.Fruits.Bounds.X, sy = fruitObject.Fruits.Bounds.Y;
 					Animation animation = new Animation(fruitObject.Fruits, new Point(sx, sy),
 						new Point(pointX, borderSize), 100);

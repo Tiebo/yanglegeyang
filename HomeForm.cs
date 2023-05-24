@@ -8,6 +8,7 @@ namespace yanglegeyang {
 		
 		private WaveOutEvent waveOut;
 		public static GameObject Game;
+		
 		public HomeForm() {
 			string filePath = "./static/3.mp3";
 			
@@ -19,7 +20,6 @@ namespace yanglegeyang {
 			waveOut.Play();
 			InitializeComponent();
 			SetFormStyle();
-
 		}
 
 		private void button1_Click(object sender, EventArgs e)

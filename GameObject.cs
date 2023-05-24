@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using NAudio.Wave;
 using yanglegeyang.components;
 using yanglegeyang.container;
@@ -21,22 +16,35 @@ namespace yanglegeyang {
 
 		public WaveOutEvent waveOut;
 
-		[DllImport("kernel32.dll")]
-		public static extern bool AllocConsole();
+		private CardSlotControl _cardSlotControl;
+
+		public int GameLevel = 1;
+
+		public bool ListNumber1 = false;
+		public bool ListNumber2 = false;
 
 		public GameObject(int level) {
+			this.GameLevel = level;
+			
 			string filePath = "./static/2.mp3";
 			waveOut = new WaveOutEvent();
 			var mp3FileReader = new Mp3FileReader(filePath);
 			waveOut.Init(mp3FileReader);
 			waveOut.Play();
 
-			AllocConsole();
 			_imageControl.Dock = DockStyle.Fill;
 			this.Controls.Add(_imageControl);
 			InitializeComponent();
-
-			StartGame(level);
+			this._imageControl.SendToBack();
+			if (GameLevel == 1) {
+				this.button1.Visible = false;
+				this.button2.Visible = false;
+			}
+			else {
+				this.button1.Visible = true;
+				this.button2.Visible = true;
+			}
+			StartGame(GameLevel);
 		}
 
 
@@ -54,19 +62,18 @@ namespace yanglegeyang {
 			Random random = new Random();
 
 			if (level == 1) {
-				_maxLevel = 4;
+				_maxLevel = 2;
 				_maxWidth = 3;
 				_maxHeight = 3;
 				List<string> list = ReadResourceUtil.ReadSkin();
 
-				var range = list.GetRange(1, 4);
-				Console.WriteLine(range.Count);
+				var range = list.GetRange(1, 3);
 
 				// 绘制卡槽
 				int initX = 100;
 				int initY = 50;
 
-				CardSlotControl cardSlotControl = new CardSlotControl(_imageControl,
+				_cardSlotControl = new CardSlotControl(_imageControl,
 					initX, initY + FruitObject.DefaultHeight * (_maxHeight + 2));
 
 				// 随机生成卡片集合：打乱顺序
@@ -75,15 +82,15 @@ namespace yanglegeyang {
 				foreach (var tmp in range) {
 					try {
 						Bitmap bufferedImage = new Bitmap(Image.FromFile(tmp));
-						for (int i = 0; i < 9; i++) {
+						for (int i = 0; i < 6; i++) {
 							var size = fruitObjects.Count - 1;
 							var fruits = new Fruits(bufferedImage, tmp);
 							var index = 0;
-							if (size > 5) {
+							if (size > 3) {
 								index = random.Next(size);
 							}
 
-							fruitObjects.Insert(index, new FruitObject(cardSlotControl, fruits, 0, 0, 0));
+							fruitObjects.Insert(index, new FruitObject(_cardSlotControl, fruits, 0, 0, 0));
 						}
 					}
 					catch (IOException e) {
@@ -101,24 +108,13 @@ namespace yanglegeyang {
 							fruitObject.X = x;
 							fruitObject.Y = y;
 							fruitObject.Level = i;
+							int colGap = 40, rowGap = 40;
 
-							int p = i % 4;
-							if (p == 0) {
-								fruitObject.Show(_imageControl, initX - FruitObject.DefaultWidth / 4 - p * 10,
-									initY - FruitObject.DefaultHeight / 4, true, true);
-							}
-							else if (p == 1) {
-								fruitObject.Show(_imageControl, initX - FruitObject.DefaultWidth / 4 + p * 10,
-									initY - FruitObject.DefaultHeight / 4, false, false);
-							}
-							else if (p == 2) {
-								fruitObject.Show(_imageControl, initX - FruitObject.DefaultWidth / 4 - p * 10,
-									initY - FruitObject.DefaultHeight / 4, true, false);
-							}
-							else if (p == 3) {
-								fruitObject.Show(_imageControl, initX - FruitObject.DefaultWidth / 4 + p * 10,
-									initY - FruitObject.DefaultHeight / 4, false, true);
-							}
+							int fx = initX + FruitObject.DefaultWidth + x * colGap + i * 10;
+							int fy = initY + FruitObject.DefaultHeight / 4 + y * rowGap + i * 10;
+
+							fruitObject.Show(_imageControl, fx,
+								fy, false, false);
 						}
 					}
 				}
@@ -132,23 +128,18 @@ namespace yanglegeyang {
 
 				List<string> list = ReadResourceUtil.ReadSkin();
 				// 第二关
-				Console.WriteLine($@"{_maxLevel}层, {_maxWidth}跨, {_maxHeight}宽, {_maxFlop}翻牌");
 				int typeSize = list.Count;
-				Console.WriteLine($@"种类数量：{typeSize}");
 				// 求得每种种类的个数
 				int groupNumber = (int) Math.Ceiling((_maxLevel * _maxWidth * _maxHeight + _maxFlop) / (3f * typeSize));
-				Console.WriteLine(@"每种组数：" + groupNumber);
 				int groupCount = groupNumber * 3;
-				Console.WriteLine(@"每种总数：" + groupCount);
-				Console.WriteLine(@"共计数量：" + (typeSize * groupCount + _maxFlop));
 
 				// 绘制卡槽
 				int initX = 100;
 				int initY = 50;
 
-				CardSlotControl cardSlotControl = new CardSlotControl(_imageControl,
+				_cardSlotControl = new CardSlotControl(_imageControl,
 					initX + ((_maxWidth - 7) * FruitObject.DefaultWidth) / 2,
-					initY + FruitObject.DefaultHeight * (_maxHeight + 2));
+					initY + FruitObject.DefaultHeight * (_maxHeight + 2) + 80);
 
 				// 随机生成卡片集合：打乱顺序
 				List<FruitObject> fruitObjects = new List<FruitObject>();
@@ -165,7 +156,7 @@ namespace yanglegeyang {
 								index = random.Next(size);
 							}
 
-							fruitObjects.Insert(index, new FruitObject(cardSlotControl, fruits, 0, 0, 0));
+							fruitObjects.Insert(index, new FruitObject(_cardSlotControl, fruits, 0, 0, 0));
 							_maxFlop--;
 						}
 					}
@@ -205,7 +196,7 @@ namespace yanglegeyang {
 						}
 					}
 				}
-				Console.WriteLine(@"重叠数量：" + idx);
+
 				// 绘制翻牌区
 				int fSize = fruitObjects.Count;
 				if (idx < fSize) {
@@ -220,11 +211,90 @@ namespace yanglegeyang {
 						if (i == 0) fruitObject.SetFlag(true);
 						fruitObject.ShowFold(_imageControl, initX - (lenght * step), initY, i * step);
 					}
-
-					Console.WriteLine(@"翻牌区数：" + lenght + "\t" + idx);
 				}
-				
 			}
+		}
+
+		private void button2_Click(object sender, EventArgs e) {
+			
+			if (ListNumber2) {
+				MessageBox.Show(@"一局只能使用一次", @"错误提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			
+			Random random = new Random();
+			
+			List<string> list = ReadResourceUtil.ReadSkin();
+			var oldObjects = MySpace.AllLevelFruits;
+
+			for (int i = 0; i < oldObjects.Count; i++) {
+				oldObjects[i].ForEach(f => {
+					var imgName = list[random.Next(list.Count)];
+					
+					Bitmap bufferedImage = new Bitmap(Image.FromFile(imgName));
+
+					f.Fruits.Image = bufferedImage;
+					f.Fruits.ImageName = imgName;
+					f.ImageName = imgName;
+					
+					f.Fruits.Invalidate();
+				});
+			}
+
+			ListNumber2 = true;
+		}
+
+		private bool _isPlay = true;
+
+		private void pictureBox1_Click(object sender, EventArgs e) {
+			if (_isPlay) {
+				waveOut.Pause();
+				button3.BackgroundImage = Properties.Resources.pause;
+			}
+			else {
+				waveOut.Play();
+				button3.BackgroundImage = Properties.Resources.play;
+			}
+
+			_isPlay = !_isPlay;
+		}
+
+		private void button1_Click(object sender, EventArgs e) {
+			if (_cardSlotControl.Slots.Count == 0) {
+				MessageBox.Show(@"当前卡槽无卡片", @"错误提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			if (ListNumber1) {
+				MessageBox.Show(@"一局只能使用一次", @"错误提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			
+			List<FruitObject> slots = _cardSlotControl.Slots.GetRange(0, _cardSlotControl.Slots.Count);
+			int fx = 200, fy = 600;
+			
+			for (int i = slots.Count - 1; i >= 0; i --) {
+				if (slots.Count - i > 3) break;
+				FruitObject f = slots[i];
+				// 从卡槽中删除该元素
+				_cardSlotControl.Slots.Remove(f);
+				_cardSlotControl.Controls.Remove(f.Fruits);
+				
+				Rectangle visibleRect = f.Fruits.DisplayRectangle;
+				_imageControl.Controls.Add(f.Fruits);
+				
+				MySpace.AllLevelFruits[0].Add(f);
+				
+				f.SetFlag(true);
+				f.Fruits.IsSlot = false;
+				f.Fruits.IsMove = true;
+				f.Fruits.SetBounds(fx, fy, FruitObject.DefaultWidth, FruitObject.DefaultHeight);
+
+				f.Fruits.Invalidate();
+				fx += FruitObject.DefaultHeight + 20;
+				_imageControl.Invalidate(visibleRect);
+			}
+
+			ListNumber1 = true;
 		}
 	}
 }

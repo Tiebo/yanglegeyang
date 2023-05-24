@@ -43,3 +43,4 @@ D:\Code\CodeFire\csharp\yanglegeyang\bin\Debug\System.Security.Principal.Windows
 D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.GameObject.resources
 D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.HomeForm.resources
 D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.FailForm.resources
+D:\Code\CodeFire\csharp\yanglegeyang\obj\Debug\yanglegeyang.components.Fruits.resources

@@ -3,20 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 
 namespace yanglegeyang.components {
-	public class OneLevelFruits {
-		private List<FruitObject> _levelFruit = new List<FruitObject>();
-
-		public List<FruitObject> LevelFruit {
-			get => _levelFruit;
-			set => _levelFruit = value;
-		}
-	}
-
 	public class MySpace {
 		public static Queue<FruitObject> FoldQueue = new Queue<FruitObject>();
 
-		public static OneLevelFruits[] AllLevelFruits = new OneLevelFruits[10];
+		public static Dictionary<int, List<FruitObject>> AllLevelFruits = new Dictionary<int, List<FruitObject>>();
 
+		public static int AllFruitsLength = 0;
 		public static void Fold_update() {
 			FoldQueue.Dequeue();
 			FoldQueue.Peek().SetFlag(true);
@@ -28,13 +20,12 @@ namespace yanglegeyang.components {
 
 		public static void Add_level_fruit(FruitObject fruitObject) {
 			var level = fruitObject.Level;
-
-			if (AllLevelFruits[level] == null)
-				AllLevelFruits[level] = new OneLevelFruits();
-
-
+			if (!AllLevelFruits.ContainsKey(level))
+				AllLevelFruits[level] = new List<FruitObject>();
+			
 			fruitObject.SetFlag(Judge_top(fruitObject));
-			AllLevelFruits[level].LevelFruit.Add(fruitObject);
+			AllLevelFruits[level].Add(fruitObject);
+			AllFruitsLength++;
 		}
 
 		public static void update_flag(FruitObject fruitObject) {
@@ -42,13 +33,9 @@ namespace yanglegeyang.components {
 
 			for (int i = level + 1; i < 10; i++) {
 				try {
-					if (AllLevelFruits[i] == null) continue;
-					if (AllLevelFruits[i].LevelFruit == null) continue;
-					if (AllLevelFruits[i].LevelFruit.Count == 0) {
-						break;
-					}
+					if (!AllLevelFruits.ContainsKey(i)) continue;
 
-					AllLevelFruits[i].LevelFruit.ForEach(v => {
+					AllLevelFruits[i].ForEach(v => {
 						var isTop = Judge_top(v);
 						if (v.Flag != isTop) {
 							v.SetFlag(isTop);
@@ -65,24 +52,16 @@ namespace yanglegeyang.components {
 			int level = fruitObject.Level;
 			// 顶层的一定可以被点击
 			if (level == 0) return true;
-			/*
-			 *	1 2 3
-			 *	4 5 6
-			 *	7 8 9
-			 */
+			
 			var r1 = new Rectangle(fruitObject.Fruits.Location,
 				new Size(FruitObject.DefaultWidth, FruitObject.DefaultHeight));
 
 			for (int i = level - 1; i >= 0; i--) {
-				if (AllLevelFruits[i] == null) continue;
+				if (!AllLevelFruits.ContainsKey(i)) continue;
 
-				foreach (var fruit in AllLevelFruits[i].LevelFruit) {
-					/*
-					 *	1 2 3
-					 *	4 5 6
-					 *	7 8 9
-					 */
-					var r2 = new Rectangle(fruit.Fruits.Location,
+				foreach (var f in AllLevelFruits[i]) {
+					
+					var r2 = new Rectangle(f.Fruits.Location,
 						new Size(FruitObject.DefaultWidth, FruitObject.DefaultHeight));
 					// 判断矩形碰撞
 					if (r1.IntersectsWith(r2)) {
@@ -100,19 +79,12 @@ namespace yanglegeyang.components {
 
 		public static void remove_level_fruit(FruitObject fruitObject) {
 			var level = fruitObject.Level;
-			AllLevelFruits[level].LevelFruit.Remove(fruitObject);
-			Console.WriteLine($@"删除了第{level}层, 坐标：{fruitObject.Fruits.Location}");
+			AllLevelFruits[level].Remove(fruitObject);
+			AllFruitsLength--;
 		}
 
-		public static int GetNumber() {
-			int sum = 0;
-			foreach (var one in AllLevelFruits) {
-				if (one?.LevelFruit == null) continue;
-
-				sum += one.LevelFruit.Count;
-			}
-
-			return sum;
+		public static int GetLength() {
+			return AllFruitsLength;
 		}
 	}
 }

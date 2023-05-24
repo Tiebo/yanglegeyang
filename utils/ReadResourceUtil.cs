@@ -7,21 +7,8 @@ using System.Security.Policy;
 
 namespace yanglegeyang.utils {
 	public class ReadResourceUtil {
-		private static Random _random = new Random();
-		private static string _exePath;
 
 		static ReadResourceUtil() {
-			try {
-				_exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-			}
-			catch (Exception e) {
-				Console.WriteLine(e);
-				throw;
-			}
-		}
-
-		public static Uri ReadAudio(string name) {
-			return GetUri(name);
 		}
 
 		public static Uri GetUri(string name) {

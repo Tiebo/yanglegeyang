@@ -118,9 +118,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test.cs" />
     <Compile Include="utils\Animation.cs" />
     <Compile Include="utils\ReadResourceUtil.cs" />
+    <EmbeddedResource Include="components\Fruits.resx">
+      <DependentUpon>Fruits.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="container\CardSlotControl.resx">
       <DependentUpon>CardSlotControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -162,10 +164,15 @@
   <ItemGroup>
     <Content Include="Resources\biaoti_1_.jpg" />
     <Content Include="Resources\bu_1_.png" />
+    <Content Include="Resources\choupai.jpg" />
+    <Content Include="Resources\pause.png" />
+    <Content Include="Resources\play.png" />
     <Content Include="Resources\QQ图片20230523220125.png" />
     <Content Include="Resources\shipin.jpg" />
     <Content Include="Resources\th.jpg" />
     <Content Include="Resources\duqu.gif" />
+    <Content Include="Resources\xipai.jpg" />
+    <Content Include="Resources\xipai1.jpg" />
     <Content Include="Resources\_4.png" />
     <Content Include="Resources\_5EC26CB4FEA13C94C8B58A8C670C77A8.jpg" />
     <Content Include="Resources\叉号.png" />

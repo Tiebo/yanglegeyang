@@ -9,7 +9,7 @@ namespace yanglegeyang.components {
 	/// </summary>
 	public class Fruits : Panel {
 		// 卡片上放置的图形
-		private Image _image;
+		public Image Image;
 
 		// 卡片名称
 		public string ImageName { get; set; }
@@ -18,6 +18,8 @@ namespace yanglegeyang.components {
 		private float _alpha = 0.65f;
 
 		public bool IsSlot { get; set; }
+		
+		public bool IsMove { get; set; }
 
 		public float Alpha {
 			get => _alpha;
@@ -27,7 +29,7 @@ namespace yanglegeyang.components {
 		private Color _bgColor = Color.FromArgb(138, 158, 58);
 
 		public Fruits(Image image, string imageName) {
-			this._image = image;
+			this.Image = image;
 			this.ImageName = imageName;
 			InitShape();
 		}
@@ -42,6 +44,7 @@ namespace yanglegeyang.components {
 			this.SetStyle(
 				ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.AllPaintingInWmPaint,
 				true);
+			this.DoubleBuffered = true;
 			// 设置图片居中
 			this.SetStyle(ControlStyles.UserPaint, true);
 		}
@@ -59,12 +62,12 @@ namespace yanglegeyang.components {
 			// 绘制外边框
 			g.DrawRectangle(pen, new Rectangle(0, 0, Width - 1, Height - 1));
 			// 绘制图片
-			if (_image != null) {
-				int imageWidth = _image.Width;
-				int imageHeight = _image.Height;
+			if (Image != null) {
+				int imageWidth = Image.Width;
+				int imageHeight = Image.Height;
 				int x = (Width - imageWidth) / 2;
 				int y = (Height - 5 - imageHeight) / 2;
-				g.DrawImage(_image, new Rectangle(x, y, imageWidth, imageHeight));
+				g.DrawImage(Image, new Rectangle(x, y, imageWidth, imageHeight));
 			}
 
 			if (_alpha < 1) {
@@ -75,7 +78,6 @@ namespace yanglegeyang.components {
 			base.OnPaint(e);
 		}
 
-		private Timer _timer = new Timer();
 		protected override void OnMouseHover(EventArgs e) {
 			if (Math.Abs(this._alpha - 1f) > 0.1) return;
 			if (IsSlot) return;
@@ -105,6 +107,19 @@ namespace yanglegeyang.components {
 			this.Height = 80;
 			Invalidate();
 			base.OnMouseLeave(e);
+		}
+
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent() {
+			this.SuspendLayout();
+			// 
+			// Fruits
+			// 
+			this.BackColor = System.Drawing.Color.Transparent;
+			this.ResumeLayout(false);
 		}
 	}
 }

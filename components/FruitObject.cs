@@ -2,17 +2,17 @@
 using System.Drawing;
 using System.IO;
 using System.Media;
+using System.Threading;
 using System.Windows.Forms;
 using yanglegeyang.container;
+using Timer = System.Windows.Forms.Timer;
 
 namespace yanglegeyang.components {
 	public class FruitObject {
 		public static readonly int DefaultWidth = 80;
 		public static readonly int DefaultHeight = 80;
 
-		private static Random _random = new Random();
-
-		private static SoundPlayer audioClip;
+		private static readonly SoundPlayer ClickAudio;
 
 		// 存放的卡片
 		public Fruits Fruits { get; set; }
@@ -36,6 +36,7 @@ namespace yanglegeyang.components {
 
 		CardSlotControl _cardSlotControl;
 
+
 		/// <summary>
 		/// 构造函数
 		/// </summary>
@@ -47,7 +48,6 @@ namespace yanglegeyang.components {
 		public FruitObject(CardSlotControl cardSlotCantainer, Fruits fruits, int x, int y, int level) {
 			this.Fruits = fruits;
 
-
 			this.X = x;
 			this.Y = y;
 			this.Level = level;
@@ -57,13 +57,13 @@ namespace yanglegeyang.components {
 		}
 
 		static FruitObject() {
-			audioClip = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
+			ClickAudio = new SoundPlayer(); // 在此之前确保已经创建了 audioClip 对象的实例
 
 			string audioPath = "./static/audio/click.wav";
 			if (File.Exists(audioPath)) {
 				using (Stream stream = File.OpenRead(audioPath)) {
-					audioClip.Stream = stream;
-					audioClip.Load();
+					ClickAudio.Stream = stream;
+					ClickAudio.Load();
 				}
 			}
 			else {
@@ -77,9 +77,9 @@ namespace yanglegeyang.components {
 			bool randomX = rx;
 			bool randomY = ry;
 
-			int pointX = initX + X * DefaultWidth + 
+			int pointX = initX + X * DefaultWidth +
 			             (randomX ? DefaultWidth / 2 : 0);
-			int pointY = initY + Y * DefaultHeight + 
+			int pointY = initY + Y * DefaultHeight +
 			             (randomY ? DefaultHeight / 2 : 0);
 
 			// 设置卡片显示在背景面板中位置
@@ -132,8 +132,8 @@ namespace yanglegeyang.components {
 			// 如果已经到达目标位置，停止Timer
 			if (t >= 1) {
 				_timer.Stop();
-				this.Fruits.Location = new Point(this.Fruits.Location.X - _cardSlotControl.InitX,
-					this.Fruits.Location.Y - _cardSlotControl.InitY);
+				this.Fruits.Location = new Point(_targetPosition.X - _cardSlotControl.InitX,
+					_targetPosition.Y - _cardSlotControl.InitY);
 				_cardSlotControl.Controls.Add(this.Fruits);
 			}
 		}
@@ -143,23 +143,31 @@ namespace yanglegeyang.components {
 		}
 
 		private void F_MouseClick(object sender, MouseEventArgs e) {
-			if (Flag) {
-				this.Fruits.Width = 80;
-				this.Fruits.Height = 80;
-				audioClip.Play();
-				
-				_oldLocation = this.Fruits.Location;
-				
-				this.Fruits.Visible = false;
-				
-				var res = _cardSlotControl.AddSlot(this);
-				
-				this.Fruits.Location = _oldLocation;
-				
-				this.Fruits.Visible = true;
-				if (res != null) {
-					DrawAnimation(res["x"], res["y"]);
-				}
+			this.Fruits.Width = 80;
+			this.Fruits.Height = 80;
+
+			// 是否可点击
+			if (!Flag) return;
+
+			// 是否在卡槽
+			if (Fruits.IsSlot) return;
+
+
+			ClickAudio.Play();
+
+			_oldLocation = this.Fruits.Location;
+			Console.WriteLine(_oldLocation);
+			this.Fruits.Visible = false;
+
+			var res = _cardSlotControl.AddSlot(this);
+			if (res != null)
+				Console.WriteLine($@"{res["x"]}, {res["y"]}");
+			this.Fruits.Location = _oldLocation;
+
+			this.Fruits.Visible = true;
+
+			if (res != null) {
+				DrawAnimation(res["x"], res["y"]);
 			}
 		}
 
@@ -170,17 +178,13 @@ namespace yanglegeyang.components {
 			Fruits.MouseClick += F_MouseClick;
 		}
 
-		public void RemoveClick() {
-			Fruits.MouseClick -= F_MouseClick;
-		}
-
-		public void RemoveImageCantainer() {
+		public void RemoveImageContainer() {
 			Rectangle visibleRect = Fruits.DisplayRectangle;
 			_imageControl.Controls.Remove(Fruits);
 			_imageControl.Invalidate(visibleRect);
 		}
 
-		public void RemoveCardSlotCantainer() {
+		public void RemoveCardSlotContainer() {
 			_cardSlotControl.Controls.Remove(Fruits);
 		}
 
@@ -188,6 +192,23 @@ namespace yanglegeyang.components {
 			Fruits.Alpha = value ? 1f : 0.65f;
 			this.Flag = value;
 			Fruits.Invalidate();
+		}
+
+		public override string ToString() {
+			return
+				$"{nameof(Flag)}: {Flag}, " +
+				$"{nameof(_imageControl)}: " +
+				$"{_imageControl}, " +
+				$"{nameof(_cardSlotControl)}: {_cardSlotControl}, " +
+				$"{nameof(_targetPosition)}: {_targetPosition}, " +
+				$"{nameof(_timer)}: {_timer}, " +
+				$"{nameof(_oldLocation)}: {_oldLocation}, " +
+				$"{nameof(t)}: {t}, " +
+				$"{nameof(Fruits)}: {Fruits}, " +
+				$"{nameof(X)}: {X}, " +
+				$"{nameof(Y)}: {Y}, " +
+				$"{nameof(Level)}: {Level}, " +
+				$"{nameof(ImageName)}: {ImageName}";
 		}
 	}
 }
