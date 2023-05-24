@@ -36,10 +36,10 @@
             // 
             this.button1.BackColor = System.Drawing.Color.Transparent;
             this.button1.BackgroundImage = global::yanglegeyang.Properties.Resources.xipai;
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button1.Location = new System.Drawing.Point(523, 1030);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(120, 87);
+            this.button1.Size = new System.Drawing.Size(110, 90);
             this.button1.TabIndex = 0;
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button2_Click);
@@ -48,10 +48,10 @@
             // 
             this.button2.BackColor = System.Drawing.Color.Transparent;
             this.button2.BackgroundImage = global::yanglegeyang.Properties.Resources.choupai;
-            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button2.Location = new System.Drawing.Point(267, 1030);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(109, 87);
+            this.button2.Size = new System.Drawing.Size(110, 90);
             this.button2.TabIndex = 1;
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.button1_Click);
@@ -82,6 +82,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "羊了个羊";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameObject_FormClosed);
             this.ResumeLayout(false);
         }
 

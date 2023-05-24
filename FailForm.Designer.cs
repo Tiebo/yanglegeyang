@@ -45,7 +45,7 @@ namespace yanglegeyang {
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 30F, ((System.Drawing.FontStyle) ((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(75, 53);
+            this.label1.Location = new System.Drawing.Point(180, 114);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(228, 66);
             this.label1.TabIndex = 0;
@@ -57,7 +57,7 @@ namespace yanglegeyang {
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("宋体", 15F);
-            this.label2.Location = new System.Drawing.Point(40, 370);
+            this.label2.Location = new System.Drawing.Point(145, 431);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(312, 25);
             this.label2.TabIndex = 1;
@@ -68,7 +68,7 @@ namespace yanglegeyang {
             this.button1.BackColor = System.Drawing.Color.Transparent;
             this.button1.BackgroundImage = global::yanglegeyang.Properties.Resources.shipin;
             this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button1.Location = new System.Drawing.Point(65, 438);
+            this.button1.Location = new System.Drawing.Point(170, 499);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(217, 68);
             this.button1.TabIndex = 2;
@@ -81,7 +81,7 @@ namespace yanglegeyang {
             this.button2.BackgroundImage = global::yanglegeyang.Properties.Resources.bu_1_;
             this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button2.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.button2.Location = new System.Drawing.Point(65, 523);
+            this.button2.Location = new System.Drawing.Point(170, 584);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(217, 77);
             this.button2.TabIndex = 4;
@@ -95,7 +95,7 @@ namespace yanglegeyang {
             this.label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label3.Font = new System.Drawing.Font("微软雅黑", 20F, ((System.Drawing.FontStyle) ((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
             this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(118, 107);
+            this.label3.Location = new System.Drawing.Point(223, 168);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(124, 47);
             this.label3.TabIndex = 5;
@@ -105,7 +105,7 @@ namespace yanglegeyang {
             // 
             this.pictureBox1.BackgroundImage = global::yanglegeyang.Properties.Resources.QQ图片20230523220125;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(118, 204);
+            this.pictureBox1.Location = new System.Drawing.Point(223, 265);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(124, 110);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -115,18 +115,19 @@ namespace yanglegeyang {
             // axWindowsMediaPlayer1
             // 
             this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(294, 234);
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(509, 302);
             this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
             this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State) (resources.GetObject("axWindowsMediaPlayer1.OcxState")));
             this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(75, 23);
             this.axWindowsMediaPlayer1.TabIndex = 7;
+            this.axWindowsMediaPlayer1.Visible = false;
             // 
             // FailForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.ClientSize = new System.Drawing.Size(375, 663);
+            this.ClientSize = new System.Drawing.Size(584, 924);
             this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label3);

@@ -296,5 +296,9 @@ namespace yanglegeyang {
 
 			ListNumber1 = true;
 		}
+
+		private void GameObject_FormClosed(object sender, FormClosedEventArgs e) {
+			Application.Exit();
+		}
 	}
 }
